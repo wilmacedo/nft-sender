@@ -8,6 +8,7 @@ import {
   BlurContent,
   ConnectContainer,
   Container,
+  HashContainer,
   LogoContainer,
   LogoContent,
 } from './styles';
@@ -16,19 +17,18 @@ import { RxUpdate } from 'react-icons/rx';
 import { connect } from '../../providers/klever';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
+import { TransactionType } from '@klever/sdk';
 
 const Home: React.FC = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [transactions, setTransactions] =
     useState<Transaction[]>(mockedTransactions);
   const [loading, setLoading] = useState(false);
+  const [lastHash, setLastHash] = useState('');
 
   const handleConnect = async () => {
     const address = await connect();
-    if (address.includes('KleverWeb')) {
-      console.warn('error on connect');
-      return;
-    }
+    if (address.includes('KleverWeb')) return;
 
     setIsConnected(true);
   };
@@ -64,6 +64,37 @@ const Home: React.FC = () => {
 
     setTransactions(transactionList);
     setLoading(false);
+  };
+
+  const handleSend = async (address: string) => {
+    const transactionPayload = {
+      type: TransactionType.Transfer,
+      payload: {
+        receiver: address,
+        amount: 1,
+        asset: 'BFST-34PM',
+      },
+    };
+    const transaction = await window.kleverWeb.buildTransaction([
+      transactionPayload,
+    ]);
+
+    await window.kleverWeb.signTransaction(transaction);
+    const response = await window.kleverWeb.broadcastTransactions([
+      transaction,
+    ]);
+    if (response.error.length !== 0) {
+      console.warn('Error on broadcast transaction:', response.error);
+      return;
+    }
+
+    const hashes = response.data.txsHashes;
+    if (hashes.length === 0) {
+      console.warn('No hashes returned');
+      return;
+    }
+
+    setLastHash(hashes[0]);
   };
 
   return (
@@ -119,12 +150,21 @@ const Home: React.FC = () => {
             </tbody>
           </Table>
 
-          <Input
-            title="Send Token"
-            onSend={() => {
-              console.log('ola');
-            }}
-          />
+          <Input title="Send Token" onSend={handleSend} />
+          {lastHash && (
+            <HashContainer>
+              <span>Last transaction hash:</span>
+              <p>
+                <a
+                  href={`https://kleverscan.org/transaction/${lastHash}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {shortValue(lastHash, 12)}
+                </a>
+              </p>
+            </HashContainer>
+          )}
         </BlurContent>
         {!isConnected && (
           <ConnectContainer>

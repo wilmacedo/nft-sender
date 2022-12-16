@@ -32,6 +32,7 @@ const Input: React.FC<InputProps> = ({ title, onSend }) => {
     }
 
     onSend(address);
+    setError('');
   };
 
   return (

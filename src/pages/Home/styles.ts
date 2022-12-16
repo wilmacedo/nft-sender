@@ -74,3 +74,19 @@ export const ConnectContainer = styled.div`
     color: white;
   }
 `;
+
+export const HashContainer = styled.div`
+  span {
+    color: ${props => props.theme.white};
+    opacity: 0.7;
+  }
+
+  p {
+    color: ${props => props.theme.white};
+
+    a {
+      color: ${props => props.theme.white};
+      text-decoration: underline;
+    }
+  }
+`;
