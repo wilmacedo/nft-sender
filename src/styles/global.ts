@@ -12,7 +12,11 @@ export default createGlobalStyle`
   }
 
   body, input, textarea, button {
-    font: 500 1rem Rubik, sans-serif;
+    font: 500 1rem Montserrat, sans-serif;
+  }
+
+  body {
+    background-color: ${props => props.theme.darkPurple};
   }
 
   input {
@@ -25,7 +29,7 @@ export default createGlobalStyle`
 
   h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
-    font-family: Rubik, sans-serif;
+    font-family: Montserrat, sans-serif;
   }
 
   h1 {
