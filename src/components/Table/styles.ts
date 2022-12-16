@@ -2,11 +2,11 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
+
   background-color: ${props => props.theme.table.background};
-  border-radius: 12px;
+
+  border-radius: 0.5rem;
   border: 1px solid ${props => props.theme.table.border};
-  z-index: 0;
 `;
 
 export const TableContent = styled.table`
@@ -21,10 +21,8 @@ export const TableContent = styled.table`
     }
   }
 
-  tr {
-    &:first-child {
-      border-bottom: 1px solid ${props => props.theme.table.border};
-    }
+  thead {
+    border-bottom: 1px solid ${props => props.theme.table.border};
   }
 
   td {

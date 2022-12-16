@@ -15,11 +15,13 @@ import {
 import { RxUpdate } from 'react-icons/rx';
 import { connect } from '../../providers/klever';
 import Button from '../../components/Button';
+import Input from '../../components/Input';
 
 const Home: React.FC = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [transactions, setTransactions] =
     useState<Transaction[]>(mockedTransactions);
+  const [loading, setLoading] = useState(false);
 
   const handleConnect = async () => {
     const address = await connect();
@@ -56,10 +58,12 @@ const Home: React.FC = () => {
   const updateTransactions = async () => {
     if (!isConnected) return;
 
+    setLoading(true);
     const transactionList = await getTransactionList(window.kleverWeb.address);
     if (transactionList.length === 0) return;
 
     setTransactions(transactionList);
+    setLoading(false);
   };
 
   return (
@@ -83,31 +87,44 @@ const Home: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {getWithAssetTx().map((transaction, index) => (
-                <tr key={index}>
-                  <td>
-                    <a
-                      href={`https://kleverscan.org/transaction/${transaction.hash}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {shortValue(transaction.hash, 8)}
-                    </a>
-                  </td>
-                  <td>
-                    <a
-                      href={`https://kleverscan.org/account/${transaction.sender}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {shortValue(transaction.sender, 8)}
-                    </a>
-                  </td>
-                  <td>{transaction.contract[0].parameter.assetId}</td>
+              {loading && (
+                <tr>
+                  <td colSpan={4}>Loading...</td>
                 </tr>
-              ))}
+              )}
+              {!loading &&
+                getWithAssetTx().map((transaction, index) => (
+                  <tr key={index}>
+                    <td>
+                      <a
+                        href={`https://kleverscan.org/transaction/${transaction.hash}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {shortValue(transaction.hash, 8)}
+                      </a>
+                    </td>
+                    <td>
+                      <a
+                        href={`https://kleverscan.org/account/${transaction.sender}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {shortValue(transaction.sender, 8)}
+                      </a>
+                    </td>
+                    <td>{transaction.contract[0].parameter.assetId}</td>
+                  </tr>
+                ))}
             </tbody>
           </Table>
+
+          <Input
+            title="Send Token"
+            onSend={() => {
+              console.log('ola');
+            }}
+          />
         </BlurContent>
         {!isConnected && (
           <ConnectContainer>

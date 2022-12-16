@@ -44,6 +44,11 @@ interface BlurProps {
 }
 
 export const BlurContent = styled.div<BlurProps>`
+  display: flex;
+
+  flex-direction: column;
+  gap: 2rem;
+
   ${props =>
     !props.hasConnection &&
     css`
