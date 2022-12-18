@@ -23,10 +23,12 @@ export const TableContent = styled.table`
 
   thead {
     border-bottom: 1px solid ${props => props.theme.table.border};
+    color: ${props => props.theme.white};
   }
 
   td {
     padding: 0.75rem;
+    color: ${props => props.theme.white};
 
     a {
       color: ${props => props.theme.white};
@@ -38,5 +40,9 @@ export const TableContent = styled.table`
     }
   }
 
-  color: white;
+  @media (max-width: 1024px) {
+    display: block;
+    overflow: auto;
+    max-width: calc(100vw - 4rem);
+  }
 `;

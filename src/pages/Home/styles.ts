@@ -8,6 +8,10 @@ export const Container = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+
+  @media (max-width: 1024px) {
+    flex-direction: column;
+  }
 `;
 
 export const LogoContainer = styled.div`
@@ -23,6 +27,11 @@ export const LogoContainer = styled.div`
       0.8,
       props.theme.lightPurple,
     )} 0%, ${props.theme.darkPurple} 70%)`};
+
+  @media (max-width: 1024px) {
+    width: 100vw;
+    height: 30%;
+  }
 `;
 
 export const LogoContent = styled.div`
