@@ -19,6 +19,10 @@ import Button from '../../components/Button';
 import Input from '../../components/Input';
 import { TransactionType } from '@klever/sdk';
 
+interface IParams {
+  [key: string]: string;
+}
+
 const Home: React.FC = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [transactions, setTransactions] =
@@ -43,12 +47,22 @@ const Home: React.FC = () => {
     return transactions.filter(tx => tx.contract[0].parameter.assetId);
   };
 
+  const buildQuery = (query: IParams) => {
+    const host = 'https://api.mainnet.klever.finance/v1.0';
+    const endpoint = '/transaction/list';
+
+    const params: string[] = Object.keys(query).map(
+      (key: string) => `${key}=${query[key]}`,
+    );
+
+    return `${host}${endpoint}?${params.join('&')}`;
+  };
+
   const getTransactionList = async (
     address: string,
   ): Promise<Transaction[]> => {
-    const request = await fetch(
-      `https://api.mainnet.klever.finance/v1.0/address/${address}/transactions`,
-    );
+    const query = { address, asset: 'BFST-34PM' };
+    const request = await fetch(buildQuery(query));
     const response = await request.json();
     if (response.error.length > 0) return [];
 
@@ -60,9 +74,8 @@ const Home: React.FC = () => {
 
     setLoading(true);
     const transactionList = await getTransactionList(window.kleverWeb.address);
-    if (transactionList.length === 0) return;
 
-    setTransactions(transactionList);
+    setTransactions(transactionList.length === 0 ? [] : transactionList);
     setLoading(false);
   };
 
